@@ -107,7 +107,7 @@ func (c *Contact) Get(gc *gin.Context) {
 	_ = gc.BindJSON(c)
 
 	var err error
-	var page = 0
+	var page = 1
 	var name, email string
 
 	queryParams := gc.Request.URL.Query()

@@ -9,21 +9,26 @@ import (
 	_ "github.com/mattn/go-sqlite3" // Import go-sqlite3 library
 )
 
-func New() *SQLite {
+func New(dbFile string) *SQLite {
 	filePath := "sqlite.db"
+	if dbFile != "" {
+		filePath = dbFile
+	}
+
 	driver := "sqlite3"
 
-	// Remove the older DB
-	os.Remove(filePath)
-
-	//Create a new DB
-	log.Println("Creating sqlite.db...")
-	file, err := os.Create(filePath) // Create SQLite file
+	// if db exists do not create a new one
+	_, err := os.Stat(filePath)
 	if err != nil {
-		log.Fatal(err.Error())
+		//Create a new DB
+		log.Println("Creating DB...")
+		file, err := os.Create(filePath) // Create SQLite file
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		_ = file.Close()
+		log.Println("DB created")
 	}
-	_ = file.Close()
-	log.Println("sqlite.db created")
 
 	sqliteDB, err := sql.Open(driver, "./"+filePath)
 	if err != nil {
@@ -31,7 +36,7 @@ func New() *SQLite {
 	}
 
 	// create contact-book table
-	createTable(sqliteDB)
+	createTableIfNotExists(sqliteDB)
 
 	return &SQLite{
 		File:   filePath,
@@ -40,10 +45,11 @@ func New() *SQLite {
 	}
 }
 
-func createTable(db *sql.DB) {
-	createTableSQL := `CREATE TABLE contact (
+func createTableIfNotExists(db *sql.DB) {
+
+	createTableSQL := `CREATE TABLE IF NOT EXISTS contact (
 		"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-		"email" TEXT,
+		"email" TEXT UNIQUE,
 		"name" TEXT
 	);`
 	statement, err := db.Prepare(createTableSQL) // Prepare SQL Statement
@@ -54,7 +60,7 @@ func createTable(db *sql.DB) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	log.Println("student table created")
+	log.Println("table created")
 }
 
 func (s *SQLite) AddContact(name, email string) error {
@@ -105,7 +111,7 @@ func (s *SQLite) Get(name, email string, page int) ([]store.Result, error) {
 	offset := limit * (page - 1)
 
 	// getAll
-	row, err := s.DB.Query("SELECT * FROM contact ORDER BY name LIMIT ? OFFSET ?", limit, offset)
+	row, err := s.DB.Query("SELECT * FROM contact ORDER BY id LIMIT ? OFFSET ?", limit, offset)
 	if err != nil {
 		return nil, err
 	}

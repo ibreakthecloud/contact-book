@@ -12,6 +12,12 @@ var (
 	port = "9000"
 )
 
+func init() {
+
+	// init the store(database)
+	store.NewStore = sqlite.New("")
+}
+
 func main() {
 
 	// check if port is provided in environment
@@ -19,13 +25,10 @@ func main() {
 		port = os.Getenv("PORT")
 	}
 
-	// 1. init the store(database)
-	store.NewStore = sqlite.New()
-
-	// 2. init the router
+	// init the router
 	r := router.New()
 
-	// 3. Listen constantly on any port
+	// Listen constantly on given port
 	log.Print("LISTENING ON PORT: ", port)
 	log.Fatal(r.Run(":" + port))
 }
