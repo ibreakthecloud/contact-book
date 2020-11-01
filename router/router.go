@@ -3,14 +3,20 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/ibreakthecloud/contact-book/controller/contact"
+	"os"
 )
 
 // Endpoints constants
-const(
+const (
 	Contact = "contact"
 )
 
-var(
+var (
+	AuthUserName = os.Getenv("username")
+	AuthPassword = os.Getenv("password")
+)
+
+var (
 	contactController = contact.New()
 )
 
