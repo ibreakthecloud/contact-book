@@ -15,5 +15,5 @@ type Store interface {
 	Get(name, email string, page int) ([]Result, error)
 	AddContact(name, email string) error
 	DeleteContact(email string) error
-	UpdateContact(email string) error
+	UpdateContact(name, email string) error
 }

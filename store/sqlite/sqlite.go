@@ -6,8 +6,6 @@ import (
 	"log"
 	"os"
 
-	//"os"
-
 	_ "github.com/mattn/go-sqlite3" // Import go-sqlite3 library
 )
 
@@ -87,7 +85,17 @@ func (s *SQLite) DeleteContact(email string) error {
 	return nil
 }
 
-func (s *SQLite) UpdateContact(email string) error {
+func (s *SQLite) UpdateContact(name, email string) error {
+	updateSQL := `UPDATE contact SET name=? WHERE email=?`
+	statement, err := s.DB.Prepare(updateSQL) // Prepare statement.
+	// This is good to avoid SQL injections
+	if err != nil {
+		return err
+	}
+	_, err = statement.Exec(name, email)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

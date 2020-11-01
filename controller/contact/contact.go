@@ -48,7 +48,29 @@ func (c *Contact) Add(gc *gin.Context) {
 }
 
 // Update is used to edit the contact present in the book
-func (c *Contact) Update(gc *gin.Context) {}
+// Update requires the email to be present
+func (c *Contact) Update(gc *gin.Context) {
+	// verify if request payload is valid
+	err := gc.BindJSON(c)
+	if err != nil {
+		gc.JSON(http.StatusInternalServerError, gin.H{"error": "unable to parse request payload"})
+		return
+	}
+
+	if !contactExists(c.Email) {
+		gc.JSON(http.StatusUnprocessableEntity, gin.H{"error": "contact does not exists"})
+		return
+	}
+	err = store.NewStore.UpdateContact(c.Name, c.Email)
+	if err != nil {
+		log.Print(err)
+		gc.JSON(http.StatusInternalServerError, gin.H{"error": "unable to update the contact"})
+		return
+	}
+
+	gc.JSON(http.StatusOK, gin.H{"message": "contact updated successfully"})
+	return
+}
 
 // Delete is used to delete the contact present in the book
 // Since the email is unique, delete is suppose to support only
@@ -81,7 +103,7 @@ func (c *Contact) Delete(gc *gin.Context) {
 // Get is used to get the contact
 // if no parameters are provided, it returns the full book
 // or searches on the basis of name or email
-func (c Contact) Get(gc *gin.Context) {
+func (c *Contact) Get(gc *gin.Context) {
 	_ = gc.BindJSON(c)
 
 	var err error
@@ -121,6 +143,7 @@ func (c Contact) Get(gc *gin.Context) {
 
 // utils functions
 
+// contactExists checks if the contact with the email exists
 func contactExists(email string) bool {
 	contact, err := store.NewStore.Get("", email, 1)
 	if err != nil {
