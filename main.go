@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/ibreakthecloud/contact-book/router"
+	"github.com/ibreakthecloud/contact-book/store"
+	"github.com/ibreakthecloud/contact-book/store/sqlite"
 	"log"
 	"os"
 )
@@ -18,6 +20,7 @@ func main() {
 	}
 
 	// 1. init the store(database)
+	store.NewStore = sqlite.New()
 
 	// 2. init the router
 	r := router.New()

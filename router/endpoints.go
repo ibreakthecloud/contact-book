@@ -16,7 +16,10 @@ func addPingRoutes(r *gin.Engine) {
 
 // addMetricsRoute that supports to ingest logs
 func addContactRoute(r *gin.Engine) {
-	metrics := r.Group(Contact)
+	contact := r.Group(Contact)
 
-	metrics.POST("/", contactController.Add)
+	contact.GET("/", contactController.Get)
+	contact.POST("/", contactController.Add)
+	contact.PUT("/", contactController.Update)
+	contact.DELETE("/", contactController.Delete)
 }
