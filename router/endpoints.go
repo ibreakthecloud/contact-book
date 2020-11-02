@@ -26,6 +26,11 @@ func addContactRoute(r *gin.Engine) {
 
 // basicAuth adds basic authentication
 func basicAuth() gin.HandlerFunc {
+	if AuthUserName == "" || AuthPassword == "" {
+		return gin.BasicAuth(gin.Accounts{
+			"admin":    "password",
+		})
+	}
 	return gin.BasicAuth(gin.Accounts{
 		AuthUserName:    AuthPassword,
 	})

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/ibreakthecloud/contact-book/router"
 	"github.com/ibreakthecloud/contact-book/store"
 	"github.com/ibreakthecloud/contact-book/store/sqlite"
@@ -9,7 +10,7 @@ import (
 )
 
 var (
-	port = "9000"
+	port = "80"
 )
 
 func init() {
@@ -27,6 +28,8 @@ func main() {
 
 	// init the router
 	r := router.New()
+
+	r.Use(gin.Logger())
 
 	// Listen constantly on given port
 	log.Print("LISTENING ON PORT: ", port)
