@@ -12,8 +12,8 @@ const (
 )
 
 var (
-	AuthUserName = os.Getenv("username")
-	AuthPassword = os.Getenv("password")
+	AuthUserName = os.Getenv("USERNAME")
+	AuthPassword = os.Getenv("PASSWORD")
 )
 
 var (
