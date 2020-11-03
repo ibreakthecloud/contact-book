@@ -70,3 +70,8 @@ curl --request GET 'localhost:9000/contact'
      ```
      curl --request GET 'localhost:9000/contact?email=k@rn'
      ```
+     
+     Note:
+     The default username and password for the basic auth for authorization is
+     Username: `admin`
+     Password: `password`
