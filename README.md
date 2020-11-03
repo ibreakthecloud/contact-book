@@ -2,6 +2,13 @@
 
 Contact book is an go based contact server that allows to create contact with name and email, where email is unique.
 
+Note:
+The default username and password for the basic auth for authorization is:
+
+Username: `admin`
+Password: `password` 
+
+
 - To Create contact:
 
 Method: POST
@@ -71,7 +78,3 @@ curl --request GET 'localhost:9000/contact'
      curl --request GET 'localhost:9000/contact?email=k@rn'
      ```
      
-     Note:
-     The default username and password for the basic auth for authorization is
-     Username: `admin`
-     Password: `password`
